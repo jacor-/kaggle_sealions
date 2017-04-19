@@ -111,38 +111,38 @@ verbose=1
 
 
 min_val_loss = 10000
-#try:
-for i_epoch in range(nb_epoch):
-    j_ep = 0
+try:
+    for i_epoch in range(nb_epoch):
+        j_ep = 0
 
-    t1 = time.time()
-    loss_train = []
-    for x, y in train_generator:
-        if j_ep  < train_steps:
-            j_ep += 1
-            model.fit(x,y,verbose = 0, batch_size=batch_size,epochs=1,shuffle = False, callbacks=[loss_history])
-            loss_train.append(np.mean(loss_history.history['loss']))
-        else:
-            break
-    train_loss = np.mean(loss_train)
+        t1 = time.time()
+        loss_train = []
+        for x, y in train_generator:
+            if j_ep  < train_steps:
+                j_ep += 1
+                model.fit(x,y,verbose = 0, batch_size=batch_size,epochs=1,shuffle = False, callbacks=[loss_history])
+                loss_train.append(np.mean(loss_history.history['loss']))
+            else:
+                break
+        train_loss = np.mean(loss_train)
 
-    # Validation stage
-    losses = []
-    j_valid = 0
-    for x,y in valid_generator:
-        if j_valid < validation_steps:
-            losses.append( model.evaluate(x,y, verbose=0))
-            j_valid += 1
-        else:
-            break
-    valid_loss = np.mean(losses)
+        # Validation stage
+        losses = []
+        j_valid = 0
+        for x,y in valid_generator:
+            if j_valid < validation_steps:
+                losses.append( model.evaluate(x,y, verbose=0))
+                j_valid += 1
+            else:
+                break
+        valid_loss = np.mean(losses)
 
-    # Save weights
-    if valid_loss < min_val_loss:
-        min_val_loss = valid_loss
-        model.save_weights(OUTPUT_MODEL)
-    print("Epoch %d   -  valid loss: %0.3f   -   train loss: %0.3f    - Time %0.2f" % (i_epoch, valid_loss, train_loss, time.time()-t1))
-#except:
-#    model.save_weights(OUTPUT_MODEL.split(".")[0] + "_interrupted_by_exception.hdf5")
+        # Save weights
+        if valid_loss < min_val_loss:
+            min_val_loss = valid_loss
+            model.save_weights(OUTPUT_MODEL)
+        print("Epoch %d   -  valid loss: %0.3f   -   train loss: %0.3f    - Time %0.2f" % (i_epoch, valid_loss, train_loss, time.time()-t1))
+except:
+    model.save_weights(OUTPUT_MODEL.split(".")[0] + "_interrupted_by_exception.hdf5")
 
 print("EXITING!")
