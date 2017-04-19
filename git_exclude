@@ -1,0 +1,19 @@
+# git ls-files --others --exclude-from=.git/info/exclude
+# Lines that start with '#' are comments.
+# For a project mostly in C, the following would be a good set of
+# exclude patterns (uncomment them if you want to use them):
+# *.[oa]
+
+# We keep the basic data structure
+
+
+# We ignore the projects We keep the main folder, though. This way we keep the file containing which projects are going to be used
+external_projects/projects/*
+
+# Common files generated within these fodlers when executing python
+*.pyc
+*/__pycache__/*
+*.ipynb_checkpoints*
+
+config_repo.sh
+old*
