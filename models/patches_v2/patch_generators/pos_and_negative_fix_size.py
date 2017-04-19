@@ -4,8 +4,6 @@ from keras.preprocessing.image import ImageDataGenerator
 import scipy.misc
 from common import dataset_loaders
 
-
-
 # We generate a label ready for multiclass based on the string labels we use as input
 class LabelEncoding(object):
 
@@ -18,10 +16,16 @@ class LabelEncoding(object):
         
         self.encoder = encoder
         self.lb = lb
+
+        self.num_classes = len(input_classes)
     
     def encode(self, x):
-        return self.lb.transform(self.encoder.transform(x))
-    
+        label = self.lb.transform(self.encoder.transform(x)) 
+        if self.num_classes == 2:
+            return np.hstack((label, 1 - label))
+        else:
+            return label
+            
     def get_class_id(self, label, binarized = True):
         if type(label) == np.ndarray:
             label = self.lb.classes_[np.argmax(label)]
@@ -36,11 +40,11 @@ def _get_positive_patches_from_image(img, case, df, patch_size):
     for ind in df[df['image'] == case].index:
         row = df.ix[ind]
         label, x, y = row['class'], row['x'], row['y']
-        if  x - patch_size/2 >= 0 and x + patch_size/2 < img.shape[1] and y - patch_size/2 >= 0 and y + patch_size/2 < img.shape[1]:
+        if  x - int(patch_size/2) >= 0 and x + int(patch_size/2) < img.shape[0] and y - int(patch_size/2) >= 0 and y + int(patch_size/2) < img.shape[1]:
             X.append(img[x-int(patch_size/2):x+int(patch_size/2), y-int(patch_size/2):y+int(patch_size/2),:])
             Y.append(label)
     return np.asarray(X, dtype = 'float32'), np.array(Y)
-
+    
 def _get_negative_patches_from_image(img, case, df, patch_size, quant_patches, label_to_use):
     car_coordinates = np.array(df[df['image'] == case][['x','y']].values)
 
