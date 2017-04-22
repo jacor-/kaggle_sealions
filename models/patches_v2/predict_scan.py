@@ -27,7 +27,6 @@ K.set_image_dim_ordering('th')
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint, Callback, History
 from dl_utils.dl_networks.resnet import ResnetBuilder
-from dl_utils.tb_callback import TensorBoard
 
 import scipy.misc
 
