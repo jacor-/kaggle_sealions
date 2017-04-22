@@ -42,7 +42,7 @@ OUTPUT_MODEL = '%s/%s/models/seal_finder.hdf5' % (settings.DATAMODEL_PATH, exper
 image_size_nn = 50
 patch_size = 80
 
-batch_size = 150
+batch_size = 5000
 scan_step = 10
 
 ########################################################
@@ -74,6 +74,7 @@ def scan_patches(imagename, image_size_nn, patch_size, step_frames, batch_size, 
                 yield np.array(patches).transpose([0,3,1,2])
                 patches = []
     if len(patches) > 0:
+        prit(xi,yi, "  out of ", x_ini, x_end, y_ini, y_end)
         yield np.array(patches).transpose([0,3,1,2])
 
 
@@ -121,6 +122,7 @@ def predict_case(case):
 for casename in dataset_loaders.get_casenames():
     filename_to_save = annotations_name.format(path=ANNOTATIONS_PATH,scan_window=scan_step, casename=casename)
     if not os.path.isfile(filename_to_save):
+        print("- Startin case %s with window step %d" % (casename, scan_step))
         preds, takentime = predict_case(casename)
         print("- Calculated case %s with window step %d in %0.0f seconds" % (casename, scan_step, takentime))
         np.savez_compressed(filename_to_save, preds = preds)
