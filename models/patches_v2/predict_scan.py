@@ -71,10 +71,11 @@ def scan_patches(imagename, image_size_nn, patch_size, step_frames, batch_size, 
         for yi in range(y_ini, y_end, step_frames):
             patches.append(scipy.misc.imresize(img[xi-wnd:xi+wnd,yi-wnd:yi+wnd], [image_size_nn, image_size_nn]) / 255)
             if len(patches) == batch_size:
+                print(xi,yi, "  out of ", x_ini, x_end, y_ini, y_end)
                 yield np.array(patches).transpose([0,3,1,2])
                 patches = []
     if len(patches) > 0:
-        prit(xi,yi, "  out of ", x_ini, x_end, y_ini, y_end)
+        print(xi,yi, "  out of ", x_ini, x_end, y_ini, y_end)
         yield np.array(patches).transpose([0,3,1,2])
 
 
