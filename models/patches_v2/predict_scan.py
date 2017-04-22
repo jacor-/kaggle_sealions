@@ -122,7 +122,7 @@ def predict_case(case):
     siz1 =  int((img.shape[0]-int(patch_size/2))/scan_step)+1
     siz2 =  int((img.shape[1]-int(patch_size/2))/scan_step)+1
 
-    print(siz1,siz2, preds.shape[1]
+    print(siz1,siz2, preds.shape[1])
     preds = preds.reshape([siz1,siz2,preds.shape[1]])
     return preds, time.time()-t1
 
