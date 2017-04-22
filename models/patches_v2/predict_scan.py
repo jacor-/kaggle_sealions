@@ -5,7 +5,7 @@ import tensorflow as tf
 import keras
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.5
+config.gpu_options.per_process_gpu_memory_fraction = 0.25
 config.gpu_options.allow_growth = True
 set_session(tf.Session(config=config))
 
@@ -42,8 +42,8 @@ OUTPUT_MODEL = '%s/%s/models/seal_finder.hdf5' % (settings.DATAMODEL_PATH, exper
 image_size_nn = 50
 patch_size = 80
 
-batch_size = 2500
-scan_step = 100
+batch_size = 5000
+scan_step = 20
 
 ########################################################
 ### Parameters
