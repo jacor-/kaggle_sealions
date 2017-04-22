@@ -42,7 +42,7 @@ OUTPUT_MODEL = '%s/%s/models/seal_finder.hdf5' % (settings.DATAMODEL_PATH, exper
 image_size_nn = 50
 patch_size = 80
 
-batch_size = 5000
+batch_size = 20000
 scan_step = 10
 
 ########################################################
