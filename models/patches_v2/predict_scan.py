@@ -43,7 +43,7 @@ image_size_nn = 50
 patch_size = 80
 
 batch_size = 2500
-scan_step = 10
+scan_step = 20
 
 ########################################################
 ### Parameters
