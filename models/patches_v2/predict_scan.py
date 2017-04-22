@@ -74,7 +74,7 @@ def scan_patches(img, image_size_nn, patch_size, step_frames, batch_size, square
                 yield np.array(patches).transpose([0,3,1,2])
                 patches = []
     if len(patches) > 0:
-        #print(xi,yi, "  out of ", x_ini, x_end, y_ini, y_end)
+        print(xi,yi, "  out of ", x_ini, x_end, y_ini, y_end)
         yield np.array(patches).transpose([0,3,1,2])
 
 
@@ -121,6 +121,7 @@ def predict_case(case):
     # Reshape the image to the original shape, so we can map predictions to actual locations
     siz1 = (int((img.shape[0]-int(patch_size/2))/scan_step)+1)
     siz2 = (int((img.shape[1]-int(patch_size/2))/scan_step)+1)
+    print(siz1,siz2, preds.shape[1])
     preds = preds.reshape([siz1,siz2,preds.shape[1]])
     return preds, time.time()-t1
 
