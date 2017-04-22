@@ -55,8 +55,7 @@ os.system('mkdir -p %s' % (ANNOTATIONS_PATH))
 ########################################################
 ### Function to load patches
 ########################################################
-def scan_patches(imagename, image_size_nn, patch_size, step_frames, batch_size, square_to_scan = None):
-    img = dataset_loaders.load_image(imagename)
+def scan_patches(img, image_size_nn, patch_size, step_frames, batch_size, square_to_scan = None):
     if square_to_scan is None:
         square_to_scan = [0,img.shape[0],0,img.shape[1]]
     # Ensure the patch does not go out of the image
@@ -112,12 +111,17 @@ model.load_weights(OUTPUT_MODEL)
 
 def predict_case(case):
     t1 = time.time()
-    patches = scan_patches(case, image_size_nn, patch_size, scan_step, batch_size, square_to_scan = None)
+    img = dataset_loaders.load_image(case)
+    patches = scan_patches(img, image_size_nn, patch_size, scan_step, batch_size, square_to_scan = None)
     preds = []
     for x in patches:
         preds.append(model.predict(x))
     preds = np.vstack(preds)
-    preds = preds.reshape([int(np.sqrt(preds.shape[0])),int(np.sqrt(preds.shape[0])), preds.shape[1]])
+    
+    # Reshape the image to the original shape, so we can map predictions to actual locations
+    siz1 = ((img.shape[0]-int(patch_size/2))/scan_step+1)
+    siz2 = ((img.shape[1]-int(patch_size/2))/scan_step+1)
+    preds = preds.reshape([siz1,siz2,preds.shape[1]])
     return preds, time.time()-t1
 
 for casename in dataset_loaders.get_casenames():
