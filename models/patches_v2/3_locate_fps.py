@@ -19,7 +19,7 @@ def load_predictions(casename, df):
 
 def convert_to_binary_prediction(preds):
     # We map from any kind of car to one specific type
-    return 1-preds[:,:,9]
+    return preds[:,:,1]
 
 def detect_blobs(preds):
     ## IN: 2d-greymap being 1 high probability of an element been there and 0 low probability
@@ -74,7 +74,7 @@ original_labels = dataset_loaders.groundlabels_dataframe()
 annotation_basename = 'sfinder'
 model_name = 'patch_seal_finder'
 annotations_path = "%s/%s/annotations" % (settings.DATAMODEL_PATH, model_name)
-scan_window = 10
+scan_window = 20
 window_size = 80
 
 ## Parametrize the matches:
@@ -96,7 +96,7 @@ for casename in dataset_loaders.get_casenames():
         img, preds, labels = load_predictions(casename, original_labels)
         print("Doing case %s" % casename)
     except:
-        #print("%s not ready" % casename)
+        print("%s not ready" % casename)
         continue
     preds = convert_to_binary_label(preds)
     detected = detect_blobs(preds)
