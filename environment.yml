@@ -138,6 +138,7 @@ dependencies:
   - jupyter-core==4.3.0
   - prompt-toolkit==1.0.14
   - pygpu==0.6.2
+  - reportlab==3.4.0
   - tensorflow==1.0.1
 prefix: /home/jose/tech/anaconda3/envs/kgsealions
 
