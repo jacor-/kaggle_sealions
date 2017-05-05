@@ -19,7 +19,7 @@ def load_predictions(casename, df):
 
 def convert_to_binary_prediction(preds):
     # We map from any kind of car to one specific type
-    return prds[:,:,0] > 0.90
+    return preds[:,:,0] > 0.90
 
 def detect_blobs(preds):
     ## IN: 2d-greymap being 1 high probability of an element been there and 0 low probability
