@@ -19,13 +19,15 @@ def load_predictions(casename, df):
 
 def convert_to_binary_prediction(preds):
     # We map from any kind of car to one specific type
-    return preds[:,:,1]
+    return prds[:,:,0] > 0.90
 
 def detect_blobs(preds):
     ## IN: 2d-greymap being 1 high probability of an element been there and 0 low probability
     ## Out: dataframe ['x','y','r']
-    blobs_doh = blob_doh(preds, max_sigma=5, threshold=.01)
-    detected = pd.DataFrame(blobs_doh[blobs_doh[:,2] > 1], columns = ['x','y','r'])
+    #blobs_doh = blob_doh(preds)#, max_sigma=5, threshold=.01)
+    blobs_doh = blob_doh(preds, min_sigma=0.000001, max_sigma=1)
+    #detected = pd.DataFrame(blobs_doh[blobs_doh[:,2] > 1], columns = ['x','y','r'])
+    detected = pd.DataFrame(blobs_doh, columns = ['x','y','r'])
     detected.x = detected.x * scan_window + window_size / 2
     detected.y = detected.y * scan_window + window_size / 2
     return detected
@@ -101,6 +103,7 @@ for casename in dataset_loaders.get_casenames():
     preds = convert_to_binary_label(preds)
     detected = detect_blobs(preds)
     dfres = find_matches(casename, labels, detected, accepted_radius = max_accepted_dist)
+    print(dfres.groupby(['pointtype']).count()['id'])
     predictions.append(dfres)
 
 ## Save all the predictions (TP, TN, FPs) in a folder
