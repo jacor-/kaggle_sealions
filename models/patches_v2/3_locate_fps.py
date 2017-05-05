@@ -11,8 +11,8 @@ import time
 def load_predictions(casename, df):
     img = dataset_loaders.load_image(casename)
     pred = np.load("%s/%s_%s_%d.npz" % (annotations_path, annotation_basename, casename, scan_window))
-    if casename in df['image'].unique():
-        labels = df[df['image'] == casename]
+    if int(casename) in df['image'].unique():
+        labels = df[df['image'] == int(casename)]
     else:
         labels = None
     return img, pred['preds'], labels
