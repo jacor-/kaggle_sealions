@@ -108,14 +108,14 @@ K.set_image_dim_ordering('th')
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint, Callback, History
 from dl_utils.dl_networks.resnet import ResnetBuilder
-from dl_utils.tb_callback import TensorBoard
+#from dl_utils.tb_callback import TensorBoard
 
 
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s  %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
 
-tb = TensorBoard(log_dir=LOGS_PATH, histogram_freq=1, write_graph=False, write_images=False)  # replace keras.callbacks.TensorBoard
+#tb = TensorBoard(log_dir=LOGS_PATH, histogram_freq=1, write_graph=False, write_images=False)  # replace keras.callbacks.TensorBoard
 model_checkpoint = ModelCheckpoint(OUTPUT_MODEL, monitor='loss', save_best_only=True)
 loss_history = History()
 

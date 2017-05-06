@@ -42,10 +42,12 @@ def _get_positive_patches_from_image(img, case, df, patch_size):
     for ind in df[df['image'] == case].index:
         row = df.ix[ind]
         label, x, y = row['class'], row['x'], row['y']
-        if  x - patch_size/2 >= 0 and x + patch_size/2 < img.shape[1] and y - patch_size/2 >= 0 and y + patch_size/2 < img.shape[1]:
+        if  x - int(patch_size/2) >= 0 and x + int(patch_size/2) < img.shape[0] and y - int(patch_size/2) >= 0 and y + int(patch_size/2) < img.shape[1]:
             X.append(img[x-int(patch_size/2):x+int(patch_size/2), y-int(patch_size/2):y+int(patch_size/2),:])
             Y.append(label)
-    return np.asarray(X, dtype = 'float32'), np.array(Y)
+    X = np.asarray(X, dtype = 'float32')
+    Y = np.array(Y)
+    return X,Y
 
 def _get_negative_patches_from_image(img, case, df, patch_size, quant_patches, label_to_use):
     car_coordinates = np.array(df[df['image'] == case][['x','y']].values)
