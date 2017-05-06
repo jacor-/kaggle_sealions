@@ -111,7 +111,7 @@ from dl_utils.dl_networks.resnet import ResnetBuilder
 from dl_utils.tb_callback import TensorBoard
 
 
-    
+
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s  %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
 

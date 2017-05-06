@@ -92,8 +92,6 @@ from keras.callbacks import History
 from dl_utils.dl_networks.resnet import ResnetBuilder
 
 
-    
-
 logging.basicConfig(level=logging.INFO, format='%(asctime)s  %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
 
 loss_history = History()
