@@ -23,13 +23,11 @@ import time
 # Inicialization
 
 ## Pretrained model... I think it will be good to start from here and not from scratch
-#INPUT_MODEL = '%s/patch_seal_finder/models/seal_finder.hdf5' % (settings.DATAMODEL_PATH)
-INPUT_MODEL = '%s/seal_finder_fps/models/fps_seal_finder.hdf5' % (settings.DATAMODEL_PATH) # This one is to continue the training which was stopped for some reason I dont know
+INPUT_MODEL = '%s/patch_seal_finder/models/seal_finder.hdf5' % (settings.DATAMODEL_PATH)
 
 ## Name of the new experiment and the new file where we will save the new output model
 experiment_folder_name = 'seal_finder_fps'
 experiment_name = 'fps_two_classes' # This one will only be used for the logs
-#OUTPUT_MODEL = '%s/%s/models/fps_seal_finder_continued.hdf5' % (settings.DATAMODEL_PATH, experiment_folder_name)
 OUTPUT_MODEL = '%s/%s/models/fps_seal_finder.hdf5' % (settings.DATAMODEL_PATH, experiment_folder_name)
 
 ## Provide data to locate the fp file if there is a FP discriminator available
