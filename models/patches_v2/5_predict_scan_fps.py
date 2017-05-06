@@ -130,7 +130,7 @@ def predict_case(case, model):
 for casename in dataset_loaders.get_casenames():
     filename_to_save = annotations_name.format(path=ANNOTATIONS_PATH,scan_window=scan_step, casename=casename)
     if not os.path.isfile(filename_to_save):
-        print("- Startin case %s with window step %d" % (casename, scan_step))
+        print("- Starting case %s with window step %d" % (casename, scan_step))
         preds, takentime = predict_case(casename, model)
         print("- Calculated case %s with window step %d in %0.0f seconds" % (casename, scan_step, takentime))
         np.savez_compressed(filename_to_save, preds = preds)
