@@ -7,7 +7,7 @@ import numpy as np
 
 
 experiment_folder_name = 'estimate_density'
-OUTPUT_MODEL = '%s/%s/models/density_estimator.hdf5' % (settings.DATAMODEL_PATH, experiment_folder_name)
+OUTPUT_MODEL = '%s/%s/models/density_estimator_sumto1_version.hdf5' % (settings.DATAMODEL_PATH, experiment_folder_name)
 
 
 batch_size = 20
