@@ -5,7 +5,7 @@ import tensorflow as tf
 import keras
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.5
+config.gpu_options.per_process_gpu_memory_fraction = 0.25
 config.gpu_options.allow_growth = True
 set_session(tf.Session(config=config))
 
@@ -34,11 +34,10 @@ import scipy.misc
 ########################################################
 ### Parameters
 ########################################################
-experiment_folder_name = 'patch_seal_finder'
-fps_experiment_folder_name = 'seal_finder_fps'
+experiment_folder_name = 'seal_finder_fps'
 experiment_name = 'resnet_v0'
 annotations_name = '{path}/sfinder_fps_{casename}_{scan_window}.npz'
-OUTPUT_MODEL_FPS = '%s/%s/models/fps_seal_finder.hdf5' % (settings.DATAMODEL_PATH,fps_experiment_folder_name)
+OUTPUT_MODEL = '%s/%s/models/fps_seal_finder.hdf5' % (settings.DATAMODEL_PATH,experiment_folder_name)
 image_size_nn = 50
 patch_size = 80
 

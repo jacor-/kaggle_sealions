@@ -27,13 +27,19 @@ def load_predictions(casename, df, class_to_index, scan_window, window_size):
             ret = fi.gaussian_filter(inp, nsig) / norm_value 
             return np.clip(ret, 0., 1) # each normal will peak at 1... but we can add them and have values higher than 1! We simply clip it
 
-        rec_im = np.zeros([img.shape[0], img.shape[1], NUM_CLASSES])
+        rec_im = np.zeros([img.shape[0], img.shape[1], NUM_CLASSES+1])
         for i in labels.index.values:
             row = labels.ix[i]
             rec_im[row.x,row.y,class_to_index[row['class']]] = 1
         for i_class in range(NUM_CLASSES):
             rec_im[:,:,i_class] = gkern2(rec_im[:,:,i_class])
-        return np.nan_to_num(rec_im)
+        rec_im = np.nan_to_num(rec_im)
+        rec_im[:,:,NUM_CLASSES] = 1
+        rec_im[:,:,NUM_CLASSES] -= rec_im[:,:,:NUM_CLASSES].sum(axis=2)
+        rec_im[rec_im[:,:,NUM_CLASSES] < 0] = 0
+        rec_im /= rec_im.sum(axis=2).reshape([rec_im.shape[0], rec_im.shape[1],1])
+        
+        return rec_im
 
     img = dataset_loaders.load_image(casename)
     pred = np.load("%s/%s_%s_%d.npz" % (annotations_path, annotation_basename, casename, scan_window))
@@ -77,7 +83,7 @@ def samples_from_coordinates(img, lab_dens, coordinates, batch_size = 20, wind_s
 
 
 def generate_samples_given_case(case, folder):
-    print('generating case %s  <-- %s' % (case, folder))
+    #print('generating case %s  <-- %s' % (case, folder))
 
     # Load image and preditions
     img, rec_im, lab_dens = load_predictions(case, original_labels, class_to_index, annotation_scan_window, annotation_window_size)

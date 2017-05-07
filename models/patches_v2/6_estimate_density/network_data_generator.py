@@ -9,12 +9,12 @@ import numpy as np
 def get_case_to_load(folder):
     # return one casefilename if exists, otherwise wait until it does+
     while os.path.exists(folder) == False:
-        print("Path does not exist yet ", folder)
+        #print("Path does not exist yet ", folder)
         time.sleep(1)
     avail_cases = [x for x in os.listdir(folder) if x[-4:] == '.npz']
     while len(avail_cases) == 0:
         print("Stuck... waiting for cases to be ready")
-        time.sleep(1)
+        time.sleep(10)
         avail_cases = [x for x in os.listdir(folder) if x[-4:] == '.npz']
     chosen_case = avail_cases[np.random.randint(len(avail_cases))]
     return chosen_case

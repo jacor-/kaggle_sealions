@@ -30,7 +30,7 @@ K.set_image_dim_ordering('th')
 
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint, Callback, History
-from dl_utils.dl_networks.resnet import ResnetBuilder
+from dl_utils.dl_networks.resnet_sigmoids import ResnetBuilder
 from keras import losses
 #from dl_utils.tb_callback import TensorBoard
 
@@ -47,8 +47,8 @@ start_file_generator_process()
 time.sleep(seconds_to_start_pulling_data)
 # This is our generator
 data_augmentation = ImageDataGenerator(vertical_flip=True, horizontal_flip = True, zoom_range = 0.00, rotation_range=180)
-train_generator = data_generator(folder_to_store_cases + '/train', data_augmentation, batch_size, min_buffer_before_start = min_buffer_before_start_train, image_size_nn = image_size_nn)
-valid_generator = data_generator(folder_to_store_cases + '/valid', data_augmentation, batch_size, min_buffer_before_start = min_buffer_before_start_valid, image_size_nn = image_size_nn)
+train_generator = data_generator(folder_to_store_cases + '/train', data_augmentation, big_batch_size_train, min_buffer_before_start = min_buffer_before_start_train, image_size_nn = image_size_nn)
+valid_generator = data_generator(folder_to_store_cases + '/valid', data_augmentation, big_batch_size_valid, min_buffer_before_start = min_buffer_before_start_valid, image_size_nn = image_size_nn)
 
 
 
@@ -59,12 +59,13 @@ valid_generator = data_generator(folder_to_store_cases + '/valid', data_augmenta
 logging.basicConfig(level=logging.INFO, format='%(asctime)s  %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
 
 #tb = TensorBoard(log_dir=LOGS_PATH, histogram_freq=1, write_graph=False, write_images=False)  # replace keras.callbacks.TensorBoard
-model_checkpoint = ModelCheckpoint(OUTPUT_MODEL, monitor='loss', save_best_only=True)
 loss_history = History()
 
 # Load model
 model = ResnetBuilder().build_resnet_50((3,image_size_nn,image_size_nn),len(class_to_index))
-model.compile(optimizer=Adam(lr=1e-4), loss=losses.kullback_leibler_divergence)#,'fmeasure'])
+model.compile(optimizer=Adam(lr=1e-4), metrics = [losses.kullback_leibler_divergence], loss=losses.kullback_leibler_divergence)#,'fmeasure'])
+model_checkpoint = ModelCheckpoint(OUTPUT_MODEL, monitor='val_kullback_leibler_divergence', mode='max', save_best_only=True)
+
 #model.load_weights(INPUT_MODEL)
 
 
