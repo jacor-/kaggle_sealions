@@ -62,7 +62,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s  %(levelname)-8s %(m
 loss_history = History()
 
 # Load model
-model = ResnetBuilder().build_resnet_50((3,image_size_nn,image_size_nn),len(class_to_index))
+model = ResnetBuilder().build_resnet_50((3,image_size_nn,image_size_nn),len(class_to_index)+1)
 model.compile(optimizer=Adam(lr=1e-4), metrics = [losses.kullback_leibler_divergence], loss=losses.kullback_leibler_divergence)#,'fmeasure'])
 model_checkpoint = ModelCheckpoint(OUTPUT_MODEL, monitor='val_kullback_leibler_divergence', mode='max', save_best_only=True)
 
