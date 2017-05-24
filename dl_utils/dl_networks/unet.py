@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 from keras.models import Model, load_model
 from keras.layers import Input, merge, Convolution2D, MaxPooling2D, UpSampling2D, AveragePooling2D, Flatten, Dense, Activation, ZeroPadding2D, Dropout, Cropping2D
+from keras.layers import Activation
+from keras.activations import softmax
 from keras.optimizers import Adam
 from keras import backend as K
 import numpy as np
@@ -10,12 +12,6 @@ from time import time
 #from dl_utils.tb_callback import TensorBoard
 K.set_image_dim_ordering('th')
 
-#import logging
-#logging.basicConfig(level=logging.INFO,
-#                    format='%(asctime)s  %(levelname)-8s %(message)s',
-#                    datefmt='%m-%d %H:%M:%S')
-
-
 def weighted_loss(y_true, y_pred, pos_weight=100, epsilon=1e-9):
     #if this argument is greater than 1 we will penalize more the nodules not detected as nodules, we can set it up to 10 or 100?
     y_true_f = K.flatten(y_true)  # y_true.flatten()
@@ -24,24 +20,23 @@ def weighted_loss(y_true, y_pred, pos_weight=100, epsilon=1e-9):
     return K.mean(-(1-y_true_f)*K.log(1-y_pred_f)-y_true_f*K.log(y_pred_f)*pos_weight)
 
 class ThickUNET(object):
-    def __init__(self,dropout=True, initialdepth=16, input_shape=(5,512,512), activation='relu',
-     init='glorot_normal', saved_file=None, pos_weight=100):
+    def __init__(self,  dropout=True,         initialdepth=16,  input_shape=(5,512,512), activation='relu',
+                        init='glorot_normal', saved_file=None,  pos_weight=100, num_labels = 5):
 
         self.thickness = input_shape[0]
-        self.model = self._get_model(input_shape, activation, init, initialdepth, dropout)        
+        self.model = self._get_model(input_shape, activation, init, initialdepth, dropout, num_labels)        
         self.model.compile(optimizer=Adam(lr=1.0e-5), loss=weighted_loss, metrics=[weighted_loss])
-
         if saved_file is not None:
             try:
                 self.model.load_weights(saved_file)
             except:
-                print 'EXPECTED MODEL'+self.model.get_config()
-                print '-------------------'
-                print 'SAVED MODEL'+load_model(saved_file, custom_objects={'weighted_loss': weighted_loss}).get_config()
+                print( 'EXPECTED MODEL'+self.model.get_config())
+                print( '-------------------')
+                print( 'SAVED MODEL'+load_model(saved_file, custom_objects={'weighted_loss': weighted_loss}).get_config())
                 raise Exception("WARNING: the file does not contain a model matching this arquitecture!!")
 
 
-    def _get_model(self,inp_shape, activation='relu', init='glorot_normal', first_depth=32,dropout=False):
+    def _get_model(self,inp_shape, activation='relu', init='glorot_normal', first_depth=32,dropout=False, num_labels = 5):
         inputs = Input(inp_shape)
 
         conv1 = Convolution2D(first_depth, 3, 3, activation=activation, init=init, border_mode='same')(inputs)
@@ -84,18 +79,10 @@ class ThickUNET(object):
         conv9 = Convolution2D(first_depth, 3, 3, activation=activation, init=init, border_mode='same')(up9)
         conv9 = Convolution2D(first_depth, 3, 3, activation=activation, init=init, border_mode='same')(conv9)
 
-        conv10 = Convolution2D(1, 1, 1, activation='sigmoid')(conv9)
+        #conv10 = Convolution2D(num_labels, kernel_size = (1,1), data_format = 'channels_first')(conv9)
+        #out = Activation(lambda x: softmax(x, axis=0))(conv10)
 
-        return Model(input=inputs, output=conv10)  # conv10
+        out = Convolution2D(num_labels, kernel_size = (1,1), activation = 'sigmoid', data_format = 'channels_first')(conv9)
 
-#----------------------------------------------    
-# hard coded normalization as in https://www.kaggle.com/gzuidhof/data-science-bowl-2017/full-preprocessing-tutorial
-MIN_BOUND = -1000.0
-MAX_BOUND = 400.0
-
-def normalize(image):
-    image = (image - MIN_BOUND) / (MAX_BOUND - MIN_BOUND)
-    image[image>1] = 1.
-    image[image<0] = 0.
-    return image
+        return Model(input=inputs, output=out)  # conv10
 
